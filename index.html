@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <form action="http://localhost:3000/uploads" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".csv" />
+        <button type="submit">Subir CSV</button>
+    </form>
+
+    <h1>Registros desde Supabase</h1>
+    <table id="records-table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Edad</th>
+      <th>Ciudad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+</body>
+<script src="./app.js"></script>
+
+</html>
