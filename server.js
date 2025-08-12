@@ -176,3 +176,68 @@ app.delete("/api/records/:id", async (req, res) => {
     res.status(500).json({ error: "Error al eliminar el registro" });
   }
 });
+
+app.post("/api/records", async (req, res) => {
+  const { name, age, city } = req.body;
+
+  // Validaciones básicas
+  if (
+    !name || !name.trim() ||
+    !city || !city.trim() ||
+    !Number.isInteger(age) || age <= 0
+  ) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+
+  try {
+    // Si tu tabla tiene upload_id NOT NULL, asegúrate de permitir NULL en ese campo
+    const { rows } = await pool.query(
+      "INSERT INTO records (name, age, city) VALUES ($1, $2, $3) RETURNING *",
+      [name.trim(), age, city.trim()]
+    );
+
+    res.status(201).json({ message: "Registro creado", record: rows[0] });
+  } catch (err) {
+    console.error("Error al crear registro:", err);
+    res.status(500).json({ error: "Error interno al crear el registro" });
+  }
+});
+
+app.post("/api/records", async (req, res) => {
+  const { name, age, city } = req.body;
+
+  // Validaciones
+  if (
+    !name?.trim() ||
+    !city?.trim() ||
+    !Number.isInteger(age) ||
+    age <= 0
+  ) {
+    return res.status(400).json({ error: "Datos inválidos" });
+  }
+
+  try {
+    // 1) Crear entrada en uploads (puedes ajustar file_name a algo descriptivo)
+    const upRes = await pool.query(
+      "INSERT INTO uploads (file_name, uploaded_at, total_rows) VALUES ($1, NOW(), 1) RETURNING id",
+      ["manual-entry"]
+    );
+    const uploadId = upRes.rows[0].id;
+
+    // 2) Insertar el record con upload_id
+    const recRes = await pool.query(
+      `INSERT INTO records (name, age, city, upload_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [name.trim(), age, city.trim(), uploadId]
+    );
+
+    res.status(201).json({
+      message: "Registro manual creado",
+      record: recRes.rows[0]
+    });
+  } catch (err) {
+    console.error("Error al crear registro manual:", err);
+    res.status(500).json({ error: "Error interno al crear el registro" });
+  }
+});

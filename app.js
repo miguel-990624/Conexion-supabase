@@ -127,7 +127,65 @@
       alert("No se pudo eliminar el registro.");
     }
   }
+  
+  async function addRecord(event) {
+  event.preventDefault();
+  // Referencias al DOM
+  const nameInput    = document.getElementById("inputName");
+  const ageInput     = document.getElementById("inputAge");
+  const cityInput    = document.getElementById("inputCity");
+  const messageBox   = document.getElementById("messageBox");
 
+  // Limpia mensajes previos
+  messageBox.textContent = "";
+
+  // Lectura y validación básica
+  const name = nameInput.value.trim();
+  const age  = parseInt(ageInput.value, 10);
+  const city = cityInput.value.trim();
+
+  if (!name || !city || !Number.isInteger(age) || age <= 0) {
+    messageBox.textContent = "Por favor completa todos los campos correctamente.";
+    messageBox.style.color = "red";
+    return;
+  }
+
+  try {
+    // Llamada al servidor
+    const response = await fetch(`http://localhost:3000/api/records`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ name, age, city })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      // Manejo de error desde el servidor
+      messageBox.textContent = result.error || "Hubo un problema al crear el registro.";
+      messageBox.style.color = "red";
+      return;
+    }
+
+    // Éxito: muestra mensaje y limpia formulario
+    messageBox.textContent = "Registro agregado con éxito.";
+    messageBox.style.color = "green";
+    nameInput.value = "";
+    ageInput.value  = "";
+    cityInput.value = "";
+    // Recargar registros para ver el nuevo registro
+    await loadRecords();
+  } catch (err) {
+    console.error("Error de red o servidor:", err);
+    messageBox.textContent = "Error en la conexión. Intenta de nuevo más tarde.";
+    messageBox.style.color = "red";
+  }
+}
+
+// Asocia la función al evento submit
+document
+  .getElementById("formRecord")
+  .addEventListener("submit", addRecord);
   // Crea y devuelve un botón Editar con su listener
   function createEditButton(tr) {
     const btn = document.createElement("button");
