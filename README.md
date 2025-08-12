@@ -113,16 +113,12 @@ Los usuarios pueden agregar registros directamente desde el frontend mediante fo
 
 
    PORT=3000
-   DB_URL=postgres://usuario:contraseña@localhost:5432/tu_db
-   JWT_SECRET=tu_clave_secreta
+   DB_HOST = aws-1-sa-east-1.pooler.supabase.com
+   DB_PORT = 6543
+   DB_NAME = postgres
+   DB_USER = postgres.npqdxkzglhkvjhstnyjr
+   DB_PASSWORD = contraseña segura 
+       
    Ejecuta el servidor:
-   
+   node server.js
 
-bash
-npm start
-🧪 Pruebas
-Puedes usar herramientas como Postman para probar las rutas protegidas y públicas. También se incluye validación de errores comunes como columnas extra en CSV o datos faltantes.
-
-
-🤝 Contribuciones
-¡Bienvenidas! Siéntete libre de abrir issues o enviar pull requests.
