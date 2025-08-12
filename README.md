@@ -106,19 +106,17 @@ Los usuarios pueden agregar registros directamente desde el frontend mediante fo
    ```bash
    git clone https://github.com/tu-usuario/registroapp.git
    cd registroapp
-Instala dependencias:
+   bash
+   Instala dependencias:
+   npm install
+   Configura el archivo .env:
 
 
-bash
-npm install
-Configura el archivo .env:
-
-
-PORT=3000
-DB_URL=postgres://usuario:contraseña@localhost:5432/tu_db
-JWT_SECRET=tu_clave_secreta
-Ejecuta el servidor:
-
+   PORT=3000
+   DB_URL=postgres://usuario:contraseña@localhost:5432/tu_db
+   JWT_SECRET=tu_clave_secreta
+   Ejecuta el servidor:
+   
 
 bash
 npm start
