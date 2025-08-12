@@ -20,6 +20,7 @@ app.get("/test-db", async (req, res) => {
 });
 
 app.use(cors());
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 const PORT = process.env.PORT || 3000;
@@ -156,4 +157,22 @@ app.put("/api/records/:id", async (req, res) => {
         console.error(err);
         res.status(500).json({ error: "Error al actualizar el registro" });
     }
+});
+
+app.delete("/api/records/:id", async (req, res) => {
+  console.log("DELETE /api/records/:id → params:", req.params);
+  const { id } = req.params;
+  try {
+    const result = await pool.query(
+      "DELETE FROM records WHERE id = $1 RETURNING *",
+      [id]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Registro no encontrado" });
+    }
+    res.json({ message: "Registro eliminado", record: result.rows[0] });
+  } catch (err) {
+    console.error("Error al eliminar registro:", err);
+    res.status(500).json({ error: "Error al eliminar el registro" });
+  }
 });
